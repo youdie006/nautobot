@@ -1253,7 +1253,8 @@ class APIViewTestCases:
             """
             DELETE a set of objects in a single request.
             """
-            id_list = self.get_deletable_object_pks()
+            # Materialized to a list because MySQL doesn't support a LIMIT-ed queryset inside a `pk__in` filter
+            id_list = list(self.get_deletable_object_pks())
             # Capture the side objects of an explicit M2M through model before the records are deleted
             m2m_side_objects = [
                 side_object

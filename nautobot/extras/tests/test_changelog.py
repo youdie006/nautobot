@@ -688,7 +688,8 @@ class ChangeLogM2MThroughTest(APITestCase):
 
         self.prefix_location_ct = ContentType.objects.get_for_model(Prefix)
         self.locations = Location.objects.filter(location_type__content_types=self.prefix_location_ct)
-        self.prefix = Prefix.objects.exclude(locations__in=self.locations[:2]).first()
+        # Materialized to a list because MySQL doesn't support a LIMIT-ed queryset inside an `__in` filter
+        self.prefix = Prefix.objects.exclude(locations__in=list(self.locations[:2])).first()
 
         location = Location.objects.get_for_model(Device).first()
         devicetype = DeviceType.objects.first()
